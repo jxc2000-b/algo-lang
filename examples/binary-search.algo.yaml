@@ -1,0 +1,71 @@
+algorithm:
+  name: binary-search
+  version: 1.0.0
+  description: "Search for a target value in a sorted array using divide and conquer"
+  author: "jxc2000-b"
+  tags: [search, divide-and-conquer]
+  complexity:
+    time: O(log n)
+    space: O(1)
+  changelog: "Initial implementation"
+  deprecated: false
+
+types:
+  primitives:
+    - int
+    - bool
+  custom:
+    - name: sorted-array
+      base: array
+      description: "An array sorted in ascending order"
+      constraints:
+        - ordered: ascending
+        - element_type: int
+
+inputs:
+  - name: arr
+    type: sorted-array
+    description: "A sorted array of integers to search"
+  - name: target
+    type: int
+    description: "The value to search for"
+
+outputs:
+  - name: index
+    type: int
+    description: "Index of the target value, or -1 if not found"
+
+steps:
+  # Initialize search boundaries
+  - set:
+      low: 0
+      high: length(arr) - 1
+
+  # Main search loop
+  - while:
+      condition: low <= high
+      do:
+        # Calculate midpoint (avoids overflow)
+        - set:
+            mid: low + (high - low) / 2
+
+        # Check if we found the target
+        - if:
+            condition: arr[mid] == target
+            then:
+              - return: mid
+
+        # Target is in the right half
+        - elif:
+            condition: arr[mid] < target
+            then:
+              - set:
+                  low: mid + 1
+
+        # Target is in the left half
+        - else:
+            - set:
+                high: mid - 1
+
+  # Target not found
+  - return: -1
